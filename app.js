@@ -1,11 +1,19 @@
 const express = require('express')
 const mongoose = require('mongoose') 
 const rotaProduto = require('./rotas/produto_rotas')
+const login = require('./rotas/usuario_rotas')
 const app = express()
 const port = 3000
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+const trataLog = (req, res, next) => {
+  console.log("Metodo", req.method);  
+  console.log("URI", req.originalUrl);
+  next();
+  console.log("Status",res.statusCode);
+}
 
 //Configuração da conexão com o Mongo
 mongoose.connect('mongodb://127.0.0.1:27017/app_produtos')
@@ -15,7 +23,11 @@ mongoose.connect('mongodb://127.0.0.1:27017/app_produtos')
     console.log("Erro>:", error) 
   });
 
+app.use(trataLog);
+
 app.use('/api/produtos', rotaProduto);
+
+app.use('/api/login', login)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
