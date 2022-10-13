@@ -1,35 +1,35 @@
-const Produto = require("../model/produto");
+const Categoria = require("../model/categoria");
 
 
 
 exports.listar = (req, res) => {
 
-    Produto.find({}, (err, produtos) => {
+    Categoria.find({}, (err, categoria) => {
         if(err){
             res.status(500).send(err);
         }
-        res.json(produtos);
+        res.json(categoria);
     })
 }
 
 exports.inserir = (req, res) => {
-    const produtoRequest = req.body;
-    if(produtoRequest && produtoRequest.nome && produtoRequest.preco) {
+    const categoriaRequest = req.body;
+    if(categoriaRequest && categoriaRequest.nome ) {
 
-        const produtoNovo = new Produto(produtoRequest);
-        produtoNovo.save((err, produtoSalvo) => {
+        const categoriaNovo = new Categoria(categoriaRequest);
+        categoriaNovo.save((err, categoriaSalvo) => {
             if(err) {
                 res.status(500).send(err);
             }
             else {
-                return res.status(201).json(produtoSalvo);
+                return res.status(201).json( categoriaSalvo);
             }
         })
         
     }
     else {
         return res.status(400).json({
-            Erro:"Nome e/ou preco sao obrigatorios"
+            Erro:"Nome é obrigatorio"
         })
     }
 }
@@ -38,16 +38,16 @@ exports.buscarPorId = (req, res) => {
     const id = req.params.id;
 
     //Produto.findOne({_id: id}, (err, produtoEncontrado) => {   
-    Produto.findById(id, (err, produtoEncontrado) => {
+    Categoria.findById(id, (err, categoriaEncontrado) => {
         if(err) {
             res.status(500).send(err); 
         }
-        else if(produtoEncontrado) {
-            return res.json(produtoEncontrado);
+        else if(categoriaEncontrado) {
+            return res.json(categoriaEncontrado);
         }
         else {
             return res.status(404).json(
-                { Erro: "Produto nao encontrado" }
+                { Erro: "Categoria não encontrada" }
             )
         }
     

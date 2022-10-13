@@ -1,6 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose') 
-const rotaProduto = require('./rotas/produto_rotas')
+const loginMidlleware = require('./middleware/login_middleware')
+const categoria = require('./rotas/categoria_rotas')
+const treino = require('./rotas/treino_rotas')
 const login = require('./rotas/usuario_rotas')
 const app = express()
 const port = 3000
@@ -16,7 +18,7 @@ const trataLog = (req, res, next) => {
 }
 
 //Configuração da conexão com o Mongo
-mongoose.connect('mongodb://127.0.0.1:27017/app_produtos')
+mongoose.connect('mongodb://127.0.0.1:27017/treino_db')
   .then(() => {
     console.log("Conectado ao Mongo..");
   }).catch((error) => { 
@@ -24,10 +26,14 @@ mongoose.connect('mongodb://127.0.0.1:27017/app_produtos')
   });
 
 app.use(trataLog);
+app.use('/login', login)
+app.use(loginMidlleware.verifyJWT);
+app.use('/categoria', categoria)
+app.use('/treino', treino)
+           
 
-app.use('/api/produtos', rotaProduto);
 
-app.use('/api/login', login)
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
